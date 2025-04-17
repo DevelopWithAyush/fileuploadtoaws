@@ -8,8 +8,8 @@ const router = express.Router();
  * @swagger
  * /upload:
  *   post:
- *     summary: Universal file upload endpoint
- *     description: Uploads files to AWS S3 with support for multiple field names
+ *     summary: Image upload endpoint
+ *     description: Uploads a single image file to AWS S3
  *     tags: [Uploads]
  *     consumes:
  *       - multipart/form-data
@@ -20,25 +20,13 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               file:
+ *               images:
  *                 type: string
  *                 format: binary
- *                 description: Single file to upload (any type)
- *               documents:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
- *                 description: Document files to upload (up to 5)
- *               images:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
- *                 description: Image files to upload (up to 5)
+ *                 description: Single image file to upload
  *     responses:
  *       200:
- *         description: Files successfully uploaded
+ *         description: Image successfully uploaded
  *         content:
  *           application/json:
  *             schema:
@@ -49,18 +37,16 @@ const router = express.Router();
  *                   example: true
  *                 count:
  *                   type: integer
- *                   example: 3
+ *                   example: 1
  *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       public_id:
- *                         type: string
- *                         example: "123e4567-e89b-12d3-a456-426614174000"
- *                       url:
- *                         type: string
- *                         example: "https://bucket-name.s3.region.amazonaws.com/uploads/images/123e4567-e89b-12d3-a456-426614174000.jpg"
+ *                   type: object
+ *                   properties:
+ *                     public_id:
+ *                       type: string
+ *                       example: "123e4567-e89b-12d3-a456-426614174000"
+ *                     url:
+ *                       type: string
+ *                       example: "https://gro8-s3.s3.ap-south-1.amazonaws.com/uploads/images/123e4567-e89b-12d3-a456-426614174000.jpg"
  *       400:
  *         description: Bad request
  *         content:
@@ -89,8 +75,6 @@ const router = express.Router();
  *                   example: "Error uploading files to S3"
  */
 router.post('/upload', upload.fields([
-    { name: 'file', maxCount: 1 },
-    { name: 'documents', maxCount: 5 },
     { name: 'images', maxCount: 1 }
 ]), handleFileUpload);
 
